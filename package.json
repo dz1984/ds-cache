@@ -1,0 +1,21 @@
+{
+  "name": "ds-cache",
+  "version": "0.0.0",
+  "description": "Simple data storage for cache",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodeunit test"
+  },
+  "keywords": [
+    "cache"
+  ],
+  "author": "dz1984",
+  "license": "MIT",
+  "dependencies": {
+    "coffee-script": "~1.7.1",
+    "lodash": "~2.4.1"
+  },
+  "devDependencies": {
+    "nodeunit": "~0.9.0"
+  }
+}
