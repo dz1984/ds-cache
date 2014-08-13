@@ -47,7 +47,7 @@ class Cache
             if matches?
                 return matches[1] * SIZE_UNITS[matches[2]]
             else
-                console.log"Could not to exchange the noation."            
+                console.log "Could not to exchange the noation."            
 
             return 
 
@@ -55,7 +55,7 @@ class Cache
             obj = @_cache if not obj?
                 
             if not _.isObject obj
-                console.log"Could not the know the content size , because is not object type."
+                console.log "Could not the know the content size , because is not object type."
 
             return JSON.stringify(obj).length
 
