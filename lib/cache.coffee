@@ -37,7 +37,7 @@ class Cache
 
         @_getNotationToByte = (notation) ->
             if not _.isString notation
-                throw  "The size notation isn't String type."
+                console.log "The size notation isn't String type."
 
             notation = notation.toUpperCase()
 
@@ -47,7 +47,7 @@ class Cache
             if matches?
                 return matches[1] * SIZE_UNITS[matches[2]]
             else
-                throw "Could not to exchange the noation."            
+                console.log"Could not to exchange the noation."            
 
             return 
 
@@ -55,7 +55,7 @@ class Cache
             obj = @_cache if not obj?
                 
             if not _.isObject obj
-                throw "Could not the know the content size , because is not object type."
+                console.log"Could not the know the content size , because is not object type."
 
             return JSON.stringify(obj).length
 
@@ -67,7 +67,7 @@ class Cache
     set: (key, val) ->
         # check the cache size
         if not @_isCouldAdd key, val
-            throw new Exception "Size not enough"
+            console.log "Size not enough"
 
         # TODO : remove some data if the cache size is over than limit size
 
