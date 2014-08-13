@@ -7,7 +7,7 @@ EXPECT_NUM = 50
 
 module.exports = 
     setUp: (callback) ->
-        @cache = new Cache limit_size:INITIAL_SIZE, auto_save: false
+        @cache = new Cache limit_size:INITIAL_SIZE
         callback()
 
     tearDown: (callback) ->
@@ -41,5 +41,4 @@ module.exports =
             @cache.set 'K'+i, 'V' + i
 
         test.equal @cache.size(), EXPECT_NUM
-        test.equal @cache.getContentSize(), @cache.content().length
         test.done()
