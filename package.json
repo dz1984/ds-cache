@@ -1,19 +1,23 @@
 {
   "name": "ds-cache",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Simple data storage for cache",
   "main": "index.js",
   "repository" : { 
     "type" : "git"
   , "url" : "https://github.com/dz1984/ds-cache.git"
-  }
+  },
   "scripts": {
     "test": "nodeunit test"
   },
   "keywords": [
     "cache"
   ],
-  "author": "dz1984",
+  "author": {
+    "name": "Donald Zhan",
+    "email": "donald.zhan1984@gmail.com",
+    "url": "http://dz1984.info/"
+  },
   "license": "MIT",
   "dependencies": {
     "coffee-script": "~1.7.1",
