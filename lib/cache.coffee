@@ -12,13 +12,16 @@ SIZE_UNITS =
     'G' : 1000000000
 
 class Exception
+
     constructor: (msg) ->
         @msg = msg
-        @name = 'Exception'
+        @name = 'Exception' 
 
 class Cache
+
     constructor: (opt) ->
         opt = {} if not opt?
+        @_index = {}
         @_cache = {}
 
         # TODO: check the unit of size (K,M,G)
@@ -28,12 +31,11 @@ class Cache
 
 
         # private method begin
-        @_isCouldAdd = (key, val) ->
+        @_isCouldAdd = (needSize) ->
             _cacheSize = @_getContentSize()
-            _dataSize = @_getContentSize key:val
             _limitSize = @_getNotationToByte @limit_size
 
-            return (_cacheSize + _dataSize) < _limitSize
+            return (_cacheSize + needSize) < _limitSize
 
         @_getNotationToByte = (notation) ->
             if not _.isString notation
@@ -59,17 +61,30 @@ class Cache
 
             return JSON.stringify(obj).length
 
+        # clean unsed cache object
+        @_gc = (needSize) ->
+            return false if needSize > @limit_size        
+
         # private method end
 
         @load()
         return @
 
     set: (key, val) ->
+        needSize =  @_getContentSize key:val
+
         # check the cache size
-        if not @_isCouldAdd key, val
+        if not @_isCouldAdd needSize
             console.log "Size not enough"
 
-        # TODO : remove some data if the cache size is over than limit size
+            # TODO : remove some data if the cache size is over than limit size
+            $_gc needSize
+
+        count = if @_index[key]? then @_index[key].count else 0
+
+        @_index[key] = 
+            count: count + 1
+            size: needSize
 
         # replace the value if the key is exist
         @_cache[key] = val
@@ -80,7 +95,9 @@ class Cache
         return
 
     get: (key) ->       
-        return @_cache[key] if @_cache[key]?
+        if @_cache[key]?
+            @_index[key].count += 1
+            return @_cache[key]
 
         return null
 
@@ -107,7 +124,10 @@ class Cache
 
     load: ->
         try
-            @_cache = JSON.parse(fs.readFileSync(@filename))
+            obj = JSON.parse fs.readFileSync(@filename)
+            @_cache = obj.cache
+            @_index = obj.index
+
         catch e
             
         return
@@ -116,6 +136,10 @@ class Cache
         _.size(@_cache)
 
     content: ->
-        JSON.stringify(@_cache)
+        _content = 
+            index: @_index
+            cache: @_cache
+
+        JSON.stringify _content
 
 module.exports = Cache

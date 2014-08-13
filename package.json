@@ -1,6 +1,6 @@
 {
   "name": "ds-cache",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Simple data storage for cache",
   "main": "index.js",
   "repository" : { 
