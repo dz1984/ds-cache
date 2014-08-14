@@ -3,13 +3,32 @@
 _ = require 'lodash'
 fs = require 'fs'
 
-LIMIT_SIZE = '100K'
+DEFAULT =
+    LIMIT_BYTES: '100K'
+    AUTO_SAVE: false
+    FILENAME: 'ds_cache.json'
 
 SIZE_UNITS =
     'B' : 1
     'K' : 1000
     'M' : 1000000
     'G' : 1000000000
+
+_getNotationToBytes = (notation) ->
+    if not _.isString notation
+        console.log "The size notation isn't String type."
+
+    notation = notation.toUpperCase()
+
+    pattern = /(\d+)([B|K|M|G])/
+    matches = pattern.exec(notation)
+
+    if matches?
+        return matches[1] * SIZE_UNITS[matches[2]]
+    else
+        console.log "Could not to exchange the noation."            
+
+    return 
 
 class Exception
 
@@ -25,35 +44,22 @@ class Cache
         @_cache = {}
 
         # TODO: check the unit of size (K,M,G)
-        @limit_size = opt.limit_size || LIMIT_SIZE
-        @auto_save = opt.auto_save || false
-        @filename = opt.filename || 'ds_cache.json'
+        @limit_bytes = opt.limit_bytes || DEFAULT.LIMIT_BYTES
+        @auto_save = opt.auto_save || DEFAULT.AUTO_SAVE
+        @filename = opt.filename || DEFAULT.FILENAME
 
 
         # private method begin
         @_isCouldAdd = (needSize) ->
-            _cacheSize = @_getContentSize()
-            _limitSize = @_getNotationToByte @limit_size
+            _cache_bytes = @_getContentBytes()
+            _limit_bytes = @_getNotationToBytess @limit_bytes
 
-            return (_cacheSize + needSize) < _limitSize
+            return (_cache_bytes + needSize) < _limit_bytes
 
-        @_getNotationToByte = (notation) ->
-            if not _.isString notation
-                console.log "The size notation isn't String type."
+        @_getNotationToBytess = (notation) ->
+            _getNotationToBytes notation
 
-            notation = notation.toUpperCase()
-
-            pattern = /(\d+)([B|K|M|G])/
-            matches = pattern.exec(notation)
-
-            if matches?
-                return matches[1] * SIZE_UNITS[matches[2]]
-            else
-                console.log "Could not to exchange the noation."            
-
-            return 
-
-        @_getContentSize = (obj) ->
+        @_getContentBytes = (obj) ->
             obj = @_cache if not obj?
                 
             if not _.isObject obj
@@ -63,7 +69,7 @@ class Cache
 
         # clean unsed cache object
         @_gc = (needSize) ->
-            return false if needSize > @limit_size        
+            return false if needSize > @limit_bytes        
 
         # private method end
 
@@ -71,14 +77,14 @@ class Cache
         return @
 
     set: (key, val) ->
-        needSize =  @_getContentSize key:val
+        needSize =  @_getContentBytes key:val
 
         # check the cache size
         if not @_isCouldAdd needSize
             console.log "Size not enough"
 
             # TODO : remove some data if the cache size is over than limit size
-            $_gc needSize
+            @_gc needSize
 
         count = if @_index[key]? then @_index[key].count else 0
 
@@ -143,3 +149,4 @@ class Cache
         JSON.stringify _content
 
 module.exports = Cache
+module.exports.getNotationToBytes = _getNotationToBytes

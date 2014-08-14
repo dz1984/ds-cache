@@ -1,34 +1,35 @@
 Cache = require '../index.js'
 
-INITIAL_SIZE = '50K'
-EXPECT_NAME = 'Donald'
-EXPECT_AGE = 30
-EXPECT_NUM = 50
+INITIAL_BYTES = '1K'
+EXPECT = 
+    NAME: 'Donald'
+    AGE: 30
+    NUM: 50
 
 module.exports = 
-    setUp: (callback) ->
-        @cache = new Cache limit_size:INITIAL_SIZE
+    'setUp': (callback) ->
+        @cache = new Cache limit_bytes: INITIAL_BYTES
         callback()
 
-    tearDown: (callback) ->
+    'tearDown': (callback) ->
         callback()
 
     'initial cache': (test) ->
-        test.equal @cache.limit_size, INITIAL_SIZE
+        test.equal @cache.limit_bytes, INITIAL_BYTES
         test.done()
 
-    'add a new cache and onece in the cache.': (test) ->
-        @cache.set 'name', 'Donald'
+    'add a new cache and only onece in the cache.': (test) ->
+        @cache.set 'name', EXPECT.NAME
         name = @cache.get 'name'
-        test.equal 'Donald', name
+        test.equal name, EXPECT.NAME
         test.equal @cache.size(), 1
         
         test.done()
 
-    'add some cache object and clear all': (test) ->
-        @cache.set 'name', EXPECT_NAME
-        @cache.set 'age', EXPECT_AGE
-        test.equal @cache.size(), 2
+    'add some cache objects and clear all': (test) ->
+        @cache.set 'name', EXPECT.NAME
+        @cache.set 'age', EXPECT.AGE
+        test.equal @cache.size(), 2 
 
         # clear all the cache 
         @cache.clear()
@@ -36,9 +37,13 @@ module.exports =
 
         test.done()
 
-    'add a new cache over than limit size.': (test) ->
-        for i in [1..EXPECT_NUM]
+    'add cache objects over than limit size.': (test) ->
+        for i in [1..EXPECT.NUM]
             @cache.set 'K'+i, 'V' + i
+        cache_bytes = @cache.content().length
+        initial_bytes =  Cache.getNotationToBytes INITIAL_BYTES
 
-        test.equal @cache.size(), EXPECT_NUM
+        test.equal @cache.size(), EXPECT.NUM
+        test.ok cache_bytes > initial_bytes
+
         test.done()
