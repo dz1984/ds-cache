@@ -17,6 +17,7 @@ SIZE_UNITS =
 _getNotationToBytes = (notation) ->
     if not _.isString notation
         console.log "The size notation isn't String type."
+        return 0
 
     notation = notation.toUpperCase()
 
@@ -28,7 +29,7 @@ _getNotationToBytes = (notation) ->
     else
         console.log "Could not to exchange the noation."            
 
-    return 
+    return 0
 
 class Exception
 
@@ -40,7 +41,7 @@ class Cache
 
     constructor: (opt) ->
         opt = {} if not opt?
-        @_index = {}
+        @_queue = []
         @_cache = {}
 
         # TODO: check the unit of size (K,M,G)
@@ -50,49 +51,60 @@ class Cache
 
 
         # private method begin
-        @_isCouldAdd = (needSize) ->
-            _cache_bytes = @_getContentBytes()
-            _limit_bytes = @_getNotationToBytess @limit_bytes
+        @_isCouldAdd = (needBytes) ->
+            _cache_bytes = @content().length
+            _limit_bytes = @_getNotationToBytes @limit_bytes
 
-            return (_cache_bytes + needSize) < _limit_bytes
+            return (_cache_bytes + needBytes) < _limit_bytes
 
-        @_getNotationToBytess = (notation) ->
-            _getNotationToBytes notation
+        @_getNotationToBytes = (notation) ->
+            return _getNotationToBytes notation
 
-        @_getContentBytes = (obj) ->
-            obj = @_cache if not obj?
-                
+        @_getContentBytes = (obj) ->                
             if not _.isObject obj
                 console.log "Could not the know the content size , because is not object type."
+                return -1
 
             return JSON.stringify(obj).length
 
         # clean unsed cache object
-        @_gc = (needSize) ->
-            return false if needSize > @limit_bytes        
+        @_gc = (needBytes) ->
+            return false if needBytes > @limit_bytes || @_queue.length is 0
 
+            # apply LRU algorithm via Array
+            until @_queue.length > 0 and @_isCouldAdd(needBytes)
+
+                releaseKey = @_queue.pop()
+                delete @_cache[releaseKey] 
+
+            return true 
+
+        @_update = (key) ->
+            @_queue = _.without @_queue, key
+            @_queue.unshift key
+            return
         # private method end
 
         @load()
         return @
 
     set: (key, val) ->
-        needSize =  @_getContentBytes key:val
+        needBytes =  @_getContentBytes key:val
 
+        if key in @_queue and @_getContentBytes(key:@_cache[key]) <= needBytes
+            _cache[key] = val
+                
+            @_update key
+            return
+        
         # check the cache size
-        if not @_isCouldAdd needSize
-            console.log "Size not enough"
+        if not @_isCouldAdd needBytes
+            console.log "Need more cache buffer."
 
-            # TODO : remove some data if the cache size is over than limit size
-            @_gc needSize
+            # remove some data if the cache buffer is over than limit bytes.
+            @_gc needBytes
 
-        count = if @_index[key]? then @_index[key].count else 0
-
-        @_index[key] = 
-            count: count + 1
-            size: needSize
-
-        # replace the value if the key is exist
+        @_update key
         @_cache[key] = val
 
         # auto save if enable
@@ -101,15 +113,14 @@ class Cache
         return
 
     get: (key) ->       
-        if @_cache[key]?
-            @_index[key].count += 1
-            return @_cache[key]
+        return null if not @_cache[key]?
 
-        return null
+        @_update @_queue, key
+        return @_cache[key]
 
     save: ->
         fs.writeFileSync(@filename, @content())
-        return
+        return true
 
     clear: (key) ->
         _isCorrect = false
@@ -117,36 +128,39 @@ class Cache
         # clear all cache objects
         if not key?
             @_cache = {}
+            @_queue = []
             _isCorrect = true
 
         # remove the cache object by key
         if key? and _.has @_cache, key
+            @_queue = _.without @_queue, key
             delete @_cache[key]
             _isCorrect = true
 
         @save() if @auto_save and _isCorrect
         
-        _isCorrect
+        return _isCorrect
 
     load: ->
         try
             obj = JSON.parse fs.readFileSync(@filename)
             @_cache = obj.cache
-            @_index = obj.index
+            @_queue = obj.queue
 
         catch e
-            
-        return
+            return false
+
+        return true
 
     size: ->
-        _.size(@_cache)
+        return _.size(@_cache)
 
     content: ->
         _content = 
-            index: @_index
+            queue: @_queue
             cache: @_cache
 
-        JSON.stringify _content
+        return JSON.stringify _content
 
 module.exports = Cache
 module.exports.getNotationToBytes = _getNotationToBytes

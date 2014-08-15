@@ -4,7 +4,7 @@ INITIAL_BYTES = '1K'
 EXPECT = 
     NAME: 'Donald'
     AGE: 30
-    NUM: 50
+    NUM: 100
 
 module.exports = 
     'setUp': (callback) ->
@@ -40,10 +40,13 @@ module.exports =
     'add cache objects over than limit size.': (test) ->
         for i in [1..EXPECT.NUM]
             @cache.set 'K'+i, 'V' + i
+
         cache_bytes = @cache.content().length
         initial_bytes =  Cache.getNotationToBytes INITIAL_BYTES
 
-        test.equal @cache.size(), EXPECT.NUM
-        test.ok cache_bytes > initial_bytes
+        console.log cache_bytes
+        console.log initial_bytes
+        test.ok @cache.size() <= EXPECT.NUM
+        test.ok cache_bytes <= initial_bytes
 
         test.done()
