@@ -52,10 +52,10 @@ class Cache
 
         # private method begin
         @_isCouldAdd = (needBytes) ->
-            _cache_bytes = @content().length
-            _limit_bytes = @_getNotationToBytes @limit_bytes
+            cache_bytes = @content().length
+            limit_bytes = @_getNotationToBytes @limit_bytes
 
-            return (_cache_bytes + needBytes) < _limit_bytes
+            return (cache_bytes + needBytes) < limit_bytes
 
         @_getNotationToBytes = (notation) ->
             return _getNotationToBytes notation
@@ -83,25 +83,41 @@ class Cache
             @_queue = _.without @_queue, key
             @_queue.unshift key
             return
+
+        @_calculateNeedBytes = (key, val) ->
+            cache_bytes = @content().length
+
+            clone_q = _.cloneDeep @_queue
+            clone_c = _.cloneDeep @_cache
+            clone_q.push key
+            clone_c[key] = val
+
+            clone_content = 
+                q: clone_q
+                c: clone_c
+
+            return @_getContentBytes(clone_content) - cache_bytes 
+
         # private method end
 
         @load()
         return @
 
     set: (key, val) ->
-        needBytes =  @_getContentBytes key:val
+        needBytes =  @_calculateNeedBytes key, val
 
+        # the key already exist
         if key in @_queue and @_getContentBytes(key:@_cache[key]) <= needBytes
-            _cache[key] = val
+            @_cache[key] = val
                 
             @_update key
             return
         
-        # check the cache size
+        # check the cache buffer size
         if not @_isCouldAdd needBytes
             console.log "Need more cache buffer."
 
-            # remove some data if the cache buffer is over than limit bytes.
+            # remove some data if the cache buffer over than limit bytes.
             @_gc needBytes
 
         @_update key
@@ -115,7 +131,7 @@ class Cache
     get: (key) ->       
         return null if not @_cache[key]?
 
-        @_update @_queue, key
+        @_update key
         return @_cache[key]
 
     save: ->
@@ -144,8 +160,8 @@ class Cache
     load: ->
         try
             obj = JSON.parse fs.readFileSync(@filename)
-            @_cache = obj.cache
-            @_queue = obj.queue
+            @_cache = obj.c
+            @_queue = obj.q
 
         catch e
             return false
@@ -157,8 +173,8 @@ class Cache
 
     content: ->
         _content = 
-            queue: @_queue
-            cache: @_cache
+            q: @_queue
+            c: @_cache
 
         return JSON.stringify _content
 
