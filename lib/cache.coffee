@@ -16,7 +16,7 @@ SIZE_UNITS =
 
 _getNotationToBytes = (notation) ->
     if not _.isString notation
-        console.log "The size notation isn't String type."
+        throw new Exception "The size notation isn't String type."
         return 0
 
     notation = notation.toUpperCase()
@@ -39,12 +39,18 @@ class Exception
 
 class Cache
 
+    ###
+    @param [Object] opt options
+    @option opt [String] limit_bytes    limit the cache file size. Default: '100K'
+    @option opt [Boolean] auto_save     enable auto save cache. Default: false
+    @option opt [String] filename       full name of save file. Default: 'ds_cache.json'
+    ###
     constructor: (opt) ->
         opt = {} if not opt?
         @_queue = []
         @_cache = {}
 
-        # TODO: check the unit of size (K,M,G)
+        # @todo check the unit of size (K,M,G)
         @limit_bytes = opt.limit_bytes || DEFAULT.LIMIT_BYTES
         @auto_save = opt.auto_save || DEFAULT.AUTO_SAVE
         @filename = opt.filename || DEFAULT.FILENAME
@@ -62,12 +68,16 @@ class Cache
 
         @_getContentBytes = (obj) ->                
             if not _.isObject obj
-                console.log "Could not the know the content size , because is not object type."
-                return -1
+                throw new Exception "Could not the know the content size , because is not object type."
 
             return JSON.stringify(obj).length
 
-        # clean unsed cache object
+        ###
+        Clean unused cache objects.
+        
+        @param needBytes [Number] ....
+        @return [Boolean] true if clean up success, otherwise false.
+        ###
         @_gc = (needBytes) ->
             return false if needBytes > @limit_bytes || @_queue.length is 0
 
@@ -100,8 +110,8 @@ class Cache
 
         # private method end
 
+        # autoload the cache file at first time
         @load()
-        return @
 
     set: (key, val) ->
         needBytes =  @_calculateNeedBytes key, val
