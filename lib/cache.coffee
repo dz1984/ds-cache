@@ -40,7 +40,9 @@ class Exception
 class Cache
 
     ###
-    @param [Object] opt options
+    Contructor function.
+
+    @param opt [Object]  options
     @option opt [String] limit_bytes    limit the cache file size. Default: '100K'
     @option opt [Boolean] auto_save     enable auto save cache. Default: false
     @option opt [String] filename       full name of save file. Default: 'ds_cache.json'
@@ -57,12 +59,30 @@ class Cache
 
 
         # private method begin
+
+        ###
+        Check the cache size is enough to add a new data.
+
+        @param needBytes [Number] need the free size
+        @return [Boolean] true if enough, otherwise false.
+        @private
+        ###
         @_isCouldAdd = (needBytes) ->
             cache_bytes = @content().length
             limit_bytes = @_getNotationToBytes @limit_bytes
 
             return (cache_bytes + needBytes) < limit_bytes
 
+        ###
+        Change the size notation to bytes.
+    
+        @example Change Rule
+            100K = 100 * 1024 Bytes
+
+        @param notation [String] 
+        @return [Number] 
+        @private
+        ###
         @_getNotationToBytes = (notation) ->
             return _getNotationToBytes notation
 
@@ -75,10 +95,11 @@ class Cache
         ###
         Clean unused cache objects.
         
-        @param needBytes [Number] ....
+        @param needBytes [Number] need the free size
         @return [Boolean] true if clean up success, otherwise false.
         ###
         @_gc = (needBytes) ->
+            # false if the needBytes big than limit bytes or the cache is empty
             return false if needBytes > @limit_bytes || @_queue.length is 0
 
             # apply LRU algorithm via Array
