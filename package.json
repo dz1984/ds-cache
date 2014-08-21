@@ -1,11 +1,11 @@
 {
   "name": "ds-cache",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Simple data storage for cache",
   "main": "index.js",
-  "repository" : { 
-    "type" : "git"
-  , "url" : "https://github.com/dz1984/ds-cache.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dz1984/ds-cache.git"
   },
   "scripts": {
     "test": "nodeunit test"
