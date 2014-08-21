@@ -1,8 +1,19 @@
-# ds-cache [![Build Status](https://travis-ci.org/dz1984/ds-cache.svg?branch=master)](https://travis-ci.org/dz1984/ds-cache)
+# ds-cache [![Build Status](https://travis-ci.org/dz1984/ds-cache.svg?branch=master)](https://travis-ci.org/dz1984/ds-cache) [![NPM](http://img.shields.io/npm/v/ds-cache.svg)](https://www.npmjs.org/package/ds-cache)
 
-Simple data storage for cache.
+Provide a tool that is simple data storage as cache and easy to use. 
 
-+ LRU algorithm
+The feature includes:
+
++ File size as Cache size.
++ Implement the LRU algorithm.
+
+## Documents
+
+Generate the document.
+```shell
+$ code lib/cache.coffee
+```
+Or you can go to CoffeeDoc.info watch [this doc](http://coffeedoc.info/github/dz1984/ds-cache/master/).
 
 ## Installation
 
@@ -10,19 +21,24 @@ Simple data storage for cache.
 $ node i ds-cache
 ```
 ## API
-+ set(key, value)
++ Cache(option) 
 
-+ get(key)
++ set(key, value) - Put data into cache.
 
-+ save()
++ get(key) - Catch data via key.
 
-+ size()
++ clear([key]) - Remove the data via key. Clear all data in the cache if you invoke this method without any arguments
 
-+ content()
++ save() - Write the cache into the file.
 
-+ load()
++ load() - Load the cache from file.
 
-## Example
++ size() - Return the number of data in the cache.
+
++ content() - Return the JSON string of cache.
+
+
+## Examples
 ```js
 var Cache = require("ds-cache");
 
@@ -35,7 +51,7 @@ var cache = new Cache(
     }
 );
 
-// set a data
+// add a data
 cache.set('name', 'Donald');
 
 
@@ -43,11 +59,14 @@ cache.set('name', 'Donald');
 cache.get('name');
 
 
-// clear a data via key
+// clear data via key
 cache.clear('name');
 
 
 // clear all data
-cache.clear()
+cache.clear();
 
 ```
+# License
+
+The MIT License (MIT)
