@@ -12,9 +12,9 @@ DEFAULT =
 # the size units
 SIZE_UNITS =
     'B' : 1
-    'K' : 1000
-    'M' : 1000000
-    'G' : 1000000000
+    'K' : 1024
+    'M' : 1048576
+    'G' : 1073741824
 
 ###
 The file size notation convert to bytes.
