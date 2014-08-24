@@ -219,7 +219,7 @@ class Cache
     @example
         cache.get('name');
 
-    @param key [String]
+    @param key [String] the key that you want to catch the data.
     @return [Object] the value via Key, otherwise return null if the key not exist.
     ###
     get: (key) ->       
@@ -246,7 +246,7 @@ class Cache
         // or
         cache.clear();
 
-    @param key [String]
+    @param key [String] optional. You could remove the data by key, either remove all data without any arguments.
     @return [Boolean] true if clear success, otherwise false.
     ###
     clear: (key) ->

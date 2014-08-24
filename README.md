@@ -11,7 +11,7 @@ The feature includes:
 
 Generate the document.
 ```shell
-$ code lib/cache.coffee
+$ codo lib/cache.coffee
 ```
 Or you can go to CoffeeDoc.info watch [this doc](http://coffeedoc.info/github/dz1984/ds-cache/master/).
 
@@ -21,13 +21,20 @@ Or you can go to CoffeeDoc.info watch [this doc](http://coffeedoc.info/github/dz
 $ node i ds-cache
 ```
 ## API
-+ Cache(option) 
++ Cache(option) - Constructor.
+    - option.limit_bytes: limit the cache file size. Default: '100K'
+    - option.auto_save: enable auto save cache. Default: false
+    - option.filename: full name of save file. Default: 'ds_cache.json'
 
 + set(key, value) - Put data into cache.
+    - key: the key of data.
+    - val: the value of data.
 
 + get(key) - Catch data via key.
+    - key: the key that you want to catch the data.
 
 + clear([key]) - Remove the data via key. Clear all data in the cache if you invoke this method without any arguments
+    - key: optional. You could remove the data by key, either remove all data without any arguments.
 
 + save() - Write the cache into the file.
 
@@ -42,7 +49,7 @@ $ node i ds-cache
 ```js
 var Cache = require("ds-cache");
 
-// initial cache instance
+// initial the cache instance
 var cache = new Cache(
     {
         limit_bytes: '2M',  // limit file size
@@ -54,19 +61,17 @@ var cache = new Cache(
 // add a data
 cache.set('name', 'Donald');
 
-
 // get value via key
 cache.get('name');
 
-
 // clear data via key
 cache.clear('name');
-
 
 // clear all data
 cache.clear();
 
 ```
+
 # License
 
 The MIT License (MIT)
