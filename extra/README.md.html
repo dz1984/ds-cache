@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <script src='../javascript/application.js'></script>
+  <script src='../javascript/search.js'></script>
+  <link rel='stylesheet' href='../stylesheets/application.css' type='text/css'>
+</head>
+  <body>
+    <div id='base' data-path='../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../extra/README.md.html' title='Ds-cache'>
+      Ds-cache
+    </a>
+    &raquo;
+    <a href='../alphabetical_index.html' title='Index'>
+      Index
+    </a>
+    &raquo;
+    <span class='title'>README.md</span>
+  </div>
+</div>
+    <div id='content'>
+      <nav class='toc'>
+        <p class='title'>
+          <a class='hide_toc' href='#'>
+            <strong>Table of Contents</strong>
+          </a>
+          <small>
+            (<a class='float_toc' href='#'>left</a>)
+          </small>
+        </p>
+      </nav>
+      <div id='filecontents'>
+        <h1 id="ds-cache-build-status-https-travis-ci-org-dz1984-ds-cache-svg-branch-master-https-travis-ci-org-dz1984-ds-cache-npm-http-img-shields-io-npm-v-ds-cache-svg-https-www-npmjs-org-package-ds-cache-">ds-cache <a href="https://travis-ci.org/dz1984/ds-cache"><img src="https://travis-ci.org/dz1984/ds-cache.svg?branch=master" alt="Build Status"></a> <a href="https://www.npmjs.org/package/ds-cache"><img src="http://img.shields.io/npm/v/ds-cache.svg" alt="NPM"></a></h1><p>Provide a tool that is simple data storage as cache and easy to use. </p><p>The feature includes:</p><ul>
+<li>File size as Cache size.</li>
+<li>Implement the LRU algorithm.</li>
+</ul>
+<h2 id="documents">Documents</h2><p>Generate the document.</p><pre><code class="lang-shell">$ codo lib/cache.coffee
+</code></pre><p>Or you can go to CoffeeDoc.info watch <a href="http://coffeedoc.info/github/dz1984/ds-cache/master/">this doc</a>.</p><h2 id="installation">Installation</h2>
+<pre><code class="lang-shell">$ npm i ds-cache
+</code></pre>
+<h2 id="api">API</h2>
+<ul>
+<li><p>Cache(option) - Constructor.</p><ul>
+<li>option.limit_bytes: limit the cache file size. Default: &#39;100K&#39;</li>
+<li>option.auto_save: enable auto save cache. Default: false</li>
+<li>option.filename: full name of save file. Default: &#39;ds_cache.json&#39;</li>
+</ul>
+</li>
+<li><p>set(key, value) - Put data into cache.</p><ul>
+<li>key: the key of data.</li>
+<li>val: the value of data.</li>
+</ul>
+</li>
+<li><p>get(key) - Catch data via key.</p><ul>
+<li>key: the key that you want to catch the data.</li>
+</ul>
+</li>
+<li><p>clear([key]) - Remove the data via key. Clear all data in the cache if you invoke this method without any arguments</p><ul>
+<li>key: optional. You could remove the data by key, either remove all data without any arguments.</li>
+</ul>
+</li>
+<li><p>save() - Write the cache into the file.</p></li>
+<li><p>load() - Load the cache from file.</p></li>
+<li><p>size() - Return the number of data in the cache.</p></li>
+<li><p>content() - Return the JSON string of cache.</p></li>
+</ul>
+<h2 id="examples">Examples</h2>
+<pre><code class="lang-js">var Cache = require(&quot;ds-cache&quot;);
+
+// initial the cache instance
+var cache = new Cache(
+    {
+        limit_bytes: &#39;2M&#39;,  // limit file size
+        auto_save:  true,
+        filename: &#39;ds_cache.json&#39;
+    }
+);
+
+// add a data
+cache.set(&#39;name&#39;, &#39;Donald&#39;);
+
+// get value via key
+cache.get(&#39;name&#39;);
+
+// clear data via key
+cache.clear(&#39;name&#39;);
+
+// clear all data
+cache.clear();
+</code></pre>
+<h1 id="license">License</h1><p>The MIT License (MIT)</p>
+      </div>
+    </div>
+    <div id='footer'>
+  August 31, 16 22:52:47 by
+  <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
+    Codo
+  </a>
+  2.0.9
+  &#10034;
+  Press H to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/netzpirat' target='_parent'>@netzpirat</a>
+  &#10034;
+  <a href='http://twitter.com/_inossidabile' target='_parent'>@_inossidabile</a>
+</div>
+<iframe id='search_frame'></iframe>
+<div id='fuzzySearch'>
+  <input type='text'>
+  <ol></ol>
+</div>
+<div id='help'>
+  <p>
+    Quickly fuzzy find classes, mixins, methods, file:
+  </p>
+  <ul>
+    <li>
+      <span>T</span>
+      Open fuzzy finder dialog
+    </li>
+  </ul>
+  <p>
+    Control the navigation frame:
+  </p>
+  <ul>
+    <li>
+      <span>L</span>
+      Toggle list view
+    </li>
+    <li>
+      <span>C</span>
+      Show class list
+    </li>
+    <li>
+      <span>I</span>
+      Show mixin list
+    </li>
+    <li>
+      <span>F</span>
+      Show file list
+    </li>
+    <li>
+      <span>M</span>
+      Show method list
+    </li>
+    <li>
+      <span>E</span>
+      Show extras list
+    </li>
+  </ul>
+  <p>
+    You can focus and blur the search input:
+  </p>
+  <ul>
+    <li>
+      <span>S</span>
+      Focus search input
+    </li>
+    <li>
+      <span>Esc</span>
+      Blur search input
+    </li>
+  </ul>
+</div>
+  </body>
+</html>
