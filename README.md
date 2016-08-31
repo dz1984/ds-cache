@@ -13,7 +13,7 @@ Generate the document.
 ```shell
 $ codo lib/cache.coffee
 ```
-Or you can go to CoffeeDoc.info watch [this doc](http://coffeedoc.info/github/dz1984/ds-cache/master/).
+Or you can go to CoffeeDoc.info watch [this doc](http://dz1984.info/ds-cache/).
 
 ## Installation
 
