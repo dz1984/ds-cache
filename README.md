@@ -18,7 +18,7 @@ Or you can go to CoffeeDoc.info watch [this doc](http://coffeedoc.info/github/dz
 ## Installation
 
 ```shell
-$ node i ds-cache
+$ npm i ds-cache
 ```
 ## API
 + Cache(option) - Constructor.
